@@ -25,7 +25,7 @@ namespace ResolucionEjercicio
     public sealed class Monitor : Producto
     {
         public int AñoFabricacion { get; set; }
-        public bool ProductoNuevo
+        public bool EsProductoNuevo
         {
             get
             {
@@ -53,7 +53,17 @@ namespace ResolucionEjercicio
 
         public override string ObtenerDescripcion()
         {
-            return $"COMPUTADORA {Marca}-{Modelo} {(int)RAM} RAM - {Fabricante}";
+            return $"COMPUTADORA {Marca}-{Modelo} {(int)RAM}GB RAM - {Fabricante}";
+        }
+    }
+
+    public sealed class Teclado : Producto
+    {
+        public bool EsMecanico { get; set; }
+
+        public override string ObtenerDescripcion()
+        {
+            return $"TECLADO {Marca} {Modelo} - {EsMecanico}";
         }
     }
 
@@ -80,72 +90,59 @@ namespace ResolucionEjercicio
             }
         }
 
-        public List<Monitor> Monitores = new List<Monitor>();
-        public List<Computadora> Computadoras = new List<Computadora>();
+        public static List<Monitor> Monitores = new List<Monitor>();
+        public static List<Computadora> Computadoras = new List<Computadora>();
+        public static List<Teclado> Teclados = new List<Teclado>();
 
         public delegate void ProductoAgregadoEliminadoHandler(ProductoAgregadoEliminadoArgs contexto);
         public event ProductoAgregadoEliminadoHandler ProductoAgregadoEliminado;
 
-        public void AgregarProducto(Monitor producto)
+        public void AgregarProducto(Producto producto)
         {
-            this.Monitores.Add(producto);
-
-            ProductoAgregadoEliminado(new ProductoAgregadoEliminadoArgs(producto));
+            AgregarProductoInterno(producto, this.ObtenerProductos());
         }
-
-        public void AgregarProducto(Computadora producto)
+        
+        private void AgregarProductoInterno(Producto producto, List<Producto> lista)
         {
-            this.Computadoras.Add(producto);
-
+            lista.Add(producto);
             ProductoAgregadoEliminado(new ProductoAgregadoEliminadoArgs(producto));
         }
 
         public void EliminarProducto(string identificador)
-        {
-            var monitor = Monitores.FirstOrDefault(x => x.Identificador == identificador);
-            if (monitor != null)
-            {
-                this.Monitores.Remove(monitor);
-                ProductoAgregadoEliminado(new ProductoAgregadoEliminadoArgs(monitor));
-            }
-
-            var computadora = Computadoras.FirstOrDefault(x => x.Identificador == identificador);
-            if (computadora != null)
-            {
-                this.Computadoras.Remove(computadora);
-                ProductoAgregadoEliminado(new ProductoAgregadoEliminadoArgs(computadora));
-            }            
-
-            //TODO > Refactorizar en clase 
+        {            
+            Eliminar(identificador, this.ObtenerProductos());            
         }
+
+        private void Eliminar(string identificador, List<Producto> lista)
+        {
+            var producto = lista.FirstOrDefault(x => x.Identificador == identificador);
+            if (producto != null)
+            {
+                lista.Remove(producto);
+                ProductoAgregadoEliminado(new ProductoAgregadoEliminadoArgs(producto));
+            }
+        }        
 
         public List<Producto> ObtenerProductos()
         {
             List<Producto> productos = new List<Producto>();
+            
+            productos.AddRange(Deposito.Monitores);
+            productos.AddRange(Deposito.Computadoras);
+            productos.AddRange(Deposito.Teclados);
 
-            productos.AddRange(this.Monitores);
-            productos.AddRange(this.Computadoras);
-
-            //TODO > Explicar predicado
-            return productos.OrderByDescending(x => x is Computadora).ToList();
+            return productos.OrderByDescending(x => x is Computadora).ToList();            
         }
-    }
+    }    
 
     public class ProductoAgregadoEliminadoArgs : EventArgs
     {
         //TODO > Que hay de raro aca? esto escala a futuro?
-        public ProductoAgregadoEliminadoArgs(Monitor producto)
+        public ProductoAgregadoEliminadoArgs(Producto producto)
         {
-            Tipo = "MONITOR";            
             Producto = producto;
         }
-
-        public ProductoAgregadoEliminadoArgs(Computadora producto)
-        {
-            Tipo = "COMPUTADORA";            
-            Producto = producto;
-        }
-
+        
         public Producto Producto { get; set; }
         public string Tipo { get; set; }        
     }

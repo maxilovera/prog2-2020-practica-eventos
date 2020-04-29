@@ -9,7 +9,7 @@ namespace ResolucionEjercicio
 {
     static class Validadores
     {
-        static bool ValidarRAM_Opcion1(int nro)
+        static bool EsRAMCompatible_Op1(this int nro)
         {
             try
             {
@@ -22,7 +22,7 @@ namespace ResolucionEjercicio
             }
         }
 
-        static bool ValidarRAM_Opcion2(string valor)
+        static bool EsRAMCompatible_Op2(this string valor)
         {
             return Enum.IsDefined(typeof(RAM), valor);
         }
@@ -32,6 +32,9 @@ namespace ResolucionEjercicio
         static void Main(string[] args)
         {
             Deposito.Instance.ProductoAgregadoEliminado += Instance_ProductoAgregadoEliminado;
+
+            Deposito.Instance.AgregarProducto(new Teclado() { Marca = "T1", Modelo = "Mod T1", NumeroSerie = "S001" });
+            Console.ReadLine();
 
             Deposito.Instance.AgregarProducto(new Monitor() { Marca = "M1", Modelo = "Mod1", NumeroSerie = "001002", AñoFabricacion = 2019 });
             Console.ReadLine();
@@ -67,5 +70,23 @@ namespace ResolucionEjercicio
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
+
+        public void BuscarClientes(string nombre, string apellido, int dni)
+        {
+
+        }
+
+        public void BuscarClientes(FiltroCliente filtro)
+        {
+
+        }        
+    }
+
+    class FiltroCliente
+    {
+        public int Dni { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido { get; set; }
+        public DateTime FechaNacimiento { get; set; }
     }
 }
