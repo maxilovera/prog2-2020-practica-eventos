@@ -21,7 +21,7 @@ namespace ServiciosWeb
             {
                 Nombre = x.Nombre,
                 Apellido = "No tiene"
-            }).ToArray();
+            }).ToList();
         }
     }
 
@@ -32,5 +32,8 @@ namespace ServiciosWeb
         public string Nombre { get; set; }
         [DataMember]
         public string Apellido { get; set; }
+        [DataMember]
+        public DateTime FechaNacimiento { get; set; }
+
     }
 }
