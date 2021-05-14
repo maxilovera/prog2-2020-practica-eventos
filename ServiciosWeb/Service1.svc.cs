@@ -21,7 +21,7 @@ namespace ServiciosWeb
             {
                 Nombre = x.Nombre,
                 Apellido = "No tiene"
-            }).ToArray();
+            }).ToList();
         }
     }
 
