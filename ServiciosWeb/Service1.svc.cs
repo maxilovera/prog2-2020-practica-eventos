@@ -34,6 +34,7 @@ namespace ServiciosWeb
         public string Apellido { get; set; }
         [DataMember]
         public DateTime FechaNacimiento { get; set; }
-
+        [DataMember]
+        public double Sueldo { get; set; }
     }
 }
