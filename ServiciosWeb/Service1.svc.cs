@@ -32,5 +32,8 @@ namespace ServiciosWeb
         public string Nombre { get; set; }
         [DataMember]
         public string Apellido { get; set; }
+        [DataMember]
+        public DateTime FechaNacimiento { get; set; }
+
     }
 }
